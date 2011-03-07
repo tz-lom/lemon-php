@@ -25,7 +25,7 @@ class ParseyyStackEntry {
                      ** number for the token at this stack level */
   var $minor; /* The user-supplied minor token value.  This
                      ** is the value of the token  */
-};
+}
 
 /* The state of the parser is completely contained in an instance of
 ** the following structure */
