@@ -1525,7 +1525,7 @@ char **argv;
     /* Produce a header file for use by the scanner.  (This step is
     ** omitted if the "-m" option is used because makeheaders will
     ** generate the file for us.) */
-    if( !mhflag ) ReportHeader(&lem);
+    if( !mhflag && target_lang == LANG_C ) ReportHeader(&lem);
   }
   if( statistics ){
     printf("Parser statistics: %d terminals, %d nonterminals, %d rules\n",
@@ -3702,14 +3702,15 @@ int mhflag;     /* Output in makeheaders format if true */
   }
   print_stack_union(out,lemp,&lineno,mhflag);
   if (target_lang == LANG_C)
+  {
   fprintf(out, "#ifndef YYSTACKDEPTH\n"); lineno++;
   if( lemp->stacksize ){
     emit_define(out, &lineno, "YYSTACKDEPTH", "%s", lemp->stacksize);
   }else{
     emit_define(out, &lineno, "YYSTACKDEPTH", "100");
   }
-  if (target_lang == LANG_C)
   fprintf(out, "#endif\n"); lineno++;
+  }
   if( mhflag ){
     fprintf(out,"#if INTERFACE\n"); lineno++;
   }
@@ -3742,7 +3743,7 @@ int mhflag;     /* Output in makeheaders format if true */
     emit_define(out, &lineno, "YYERRORSYMBOL", "%d", lemp->errsym->index);
     emit_define(out, &lineno, "YYERRSYMDT", "yy%d", lemp->errsym->dtnum);
   }
-  if( lemp->has_fallback ){
+  if( lemp->has_fallback && target_lang == LANG_C){
     emit_define(out, &lineno, "YYFALLBACK", "1");
   }
   tplt_xfer(lemp->name,in,out,&lineno);
@@ -4089,7 +4090,11 @@ int mhflag;     /* Output in makeheaders format if true */
       if( rp2->code==rp->code ){
         fprintf(out,"      case %d: /* ", rp2->index);
         writeRuleText(out, rp2);
+        if (target_lang == LANG_C) {
         fprintf(out," */ yytestcase(yyruleno==%d);\n", rp2->index); lineno++;
+        } else {
+          fprintf(out," */\n"); lineno++;
+        }
         rp2->code = 0;
       }
     }
@@ -4105,7 +4110,11 @@ int mhflag;     /* Output in makeheaders format if true */
     assert( rp->code[0]=='\n' && rp->code[1]==0 );
     fprintf(out,"      /* (%d) ", rp->index);
     writeRuleText(out, rp);
+    if (target_lang == LANG_C) {
     fprintf(out, " */ yytestcase(yyruleno==%d);\n", rp->index); lineno++;
+    } else {
+      fprintf(out," */\n"); lineno++;
+    }
   }
   fprintf(out,"        break;\n"); lineno++;
   tplt_xfer(lemp->name,in,out,&lineno);
