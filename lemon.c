@@ -262,6 +262,7 @@ struct lemon {
   char *start;             /* Name of the start symbol for the grammar */
   char *stacksize;         /* Size of the parser stack */
   char *include;           /* Code to put at the start of the C file */
+  char *include_class;     /* Code to put to the parser class in PHP code */
   char *error;             /* Code to execute when an error is seen */
   char *overflow;          /* Code to execute on a stack overflow */
   char *failure;           /* Code to execute on parser failure */
@@ -2232,6 +2233,8 @@ to follow the previous rule.");
           psp->insertLineMacro = 0;
 	}else if( strcmp(x,"include")==0 ){
           psp->declargslot = &(psp->gp->include);
+	}else if( strcmp(x,"include_class")==0 ){
+          psp->declargslot = &(psp->gp->include_class);
 	}else if( strcmp(x,"code")==0 ){
           psp->declargslot = &(psp->gp->extracode);
 	}else if( strcmp(x,"token_destructor")==0 ){
@@ -3664,6 +3667,8 @@ int mhflag;     /* Output in makeheaders format if true */
     fprintf(out, "#include \"%s\"\n", name); lineno++;
     free(name);
   }
+  tplt_xfer(lemp->name,in,out,&lineno);
+  tplt_print(out,lemp,lemp->include_class,&lineno);
   tplt_xfer(lemp->name,in,out,&lineno);
 
   /* Generate #defines for all tokens */

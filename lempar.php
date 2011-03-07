@@ -40,6 +40,7 @@ class ParseParser {
   var $yyTraceFILE = null;
   var $yyTracePrompt = null;
 
+%%
 
 
 /* Next is all token values, in a form suitable for use by makeheaders.
