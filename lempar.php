@@ -48,7 +48,7 @@ class Parse {
       $this->yyTraceFILE = null;
   }
 
-  public function token_name($tokenType)
+  public function yy_token_name($tokenType)
   {
     if (isset(self::$yyTokenName[$tokenType]))
       return self::$yyTokenName[$tokenType];
@@ -135,7 +135,7 @@ class Parse {
   {
     $i = 0;
 
-    if ($stateno>self::YY_REDUCE_MAX || ($i = self::$yy_reduce_ofst[$stateno]) == self::YY_REDUCE_USE_DFLT)
+    if ($stateno > self::YY_REDUCE_MAX || ($i = self::$yy_reduce_ofst[$stateno]) == self::YY_REDUCE_USE_DFLT)
       return self::$yy_default[$stateno];
 
     if ($iLookAhead == self::YYNOCODE)
@@ -235,6 +235,7 @@ class Parse {
 
   private function yy_syntax_error($yymajor, $yyminor)
   {
+    $message = 'Unexpected ' . $this->yy_token_name($yymajor) . '(' . $yyminor . ')';
 %%
   }
 
@@ -297,7 +298,7 @@ class Parse {
         if ($this->yyTraceFILE) 
           fprintf($this->yyTraceFILE, "%sSyntax Error!\n", $this->yyTracePrompt);
 
-        if (self::YYERRORSYMBOL) 
+        if (defined('self::YYERRORSYMBOL')) 
         {
           if ($this->yyerrcnt < 0) 
             $this->yy_syntax_error($yymajor, $yyminor);
