@@ -2,7 +2,7 @@
 
 %%
 
-class Parse {
+class ParseParser {
   private $yyidx = -1;               /* Index of top element in stack */
   private $yyerrcnt;                 /* Shifts left before out of the error */
   private $yystack = array();
@@ -42,9 +42,9 @@ class Parse {
     $this->yyTraceFILE = $TraceFILE;
     $this->yyTracePrompt = $zTracePrompt;
 
-    if ($yyTraceFILE === null)
+    if ($TraceFILE === null)
       $this->yyTracePrompt = null;
-    else if ($yyTracePrompt === null)
+    else if ($zTracePrompt === null)
       $this->yyTraceFILE = null;
   }
 
@@ -249,7 +249,7 @@ class Parse {
 %%
   }
 
-  private function doParse($yymajor, $yyminor = null) 
+  public function Parse($yymajor, $yyminor = null) 
   {
     $yyact = 0; /* The parser action. */
     $yyendofinput = 0; /* True if we are at the end of input */
@@ -356,5 +356,3 @@ class Parse {
     while ($yymajor != self::YYNOCODE && $this->yyidx >= 0);
   }
 }
-
-?>
